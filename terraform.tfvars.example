@@ -1,0 +1,65 @@
+# ASI Cloud Terraform Configuration
+#
+# Copy this file to terraform.tfvars and fill in your values.
+# IMPORTANT: Never commit terraform.tfvars to version control!
+
+# -----------------------------------------------------------------------------
+# ASI Cloud Connection (provided by ASI)
+# -----------------------------------------------------------------------------
+
+nutanix_endpoint = "prism.asi.cloud.example"  # Your Prism Central endpoint
+nutanix_insecure = false                       # Set true if using self-signed certs
+
+# Credentials - prefer environment variables for security:
+#   export TF_VAR_nutanix_username="your-username"
+#   export TF_VAR_nutanix_password="your-password"
+#
+# Or uncomment below (not recommended for shared environments):
+# nutanix_username = "your-username"
+# nutanix_password = "your-password"
+
+# -----------------------------------------------------------------------------
+# VM Configuration
+# -----------------------------------------------------------------------------
+
+vm_name        = "my-vm-01"
+vm_description = "My first ASI Cloud VM"
+
+# VM sizing
+vcpus          = 2      # Number of vCPU sockets
+cores_per_vcpu = 1      # Cores per socket
+memory_gb      = 4      # Memory in GB
+disk_gb        = 50     # Boot disk in GB
+
+# Power on after creation
+power_on = true
+
+# -----------------------------------------------------------------------------
+# Network (provided by ASI)
+# -----------------------------------------------------------------------------
+
+subnet_name = "Your-Subnet-Name"  # Ask ASI for your subnet name
+
+# -----------------------------------------------------------------------------
+# Operating System Image
+# -----------------------------------------------------------------------------
+
+# Available images (ask ASI for current list):
+#   - ubuntu-24.04-cloud
+#   - ubuntu-22.04-cloud
+#   - windows-2022-std
+#   - windows-2019-std
+#
+# Leave empty for a blank disk (bring your own ISO)
+image_name = "ubuntu-24.04-cloud"
+
+# -----------------------------------------------------------------------------
+# Categories (Optional)
+# -----------------------------------------------------------------------------
+
+# Tags for organizing your VMs
+categories = {
+  # "Environment" = "Development"
+  # "Application" = "WebServer"
+  # "Owner"       = "your-team"
+}

@@ -1,0 +1,53 @@
+#cloud-config
+# Cloud-init configuration for ASI Cloud VMs
+# This template is rendered by Terraform
+
+hostname: ${hostname}
+manage_etc_hosts: true
+fqdn: ${hostname}.local
+
+# Create admin user with sudo access
+users:
+  - name: ${username}
+    groups: [sudo, docker]
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: true
+%{ if length(ssh_keys) > 0 ~}
+    ssh_authorized_keys:
+%{ for key in ssh_keys ~}
+      - ${key}
+%{ endfor ~}
+%{ endif ~}
+
+# Disable password authentication for security
+ssh_pwauth: false
+
+# Install packages
+packages:
+  - qemu-guest-agent
+  - curl
+  - wget
+  - vim
+  - htop
+%{ for pkg in packages ~}
+  - ${pkg}
+%{ endfor ~}
+
+# Update and upgrade on first boot
+package_update: true
+package_upgrade: true
+
+# Enable qemu-guest-agent for Nutanix integration
+runcmd:
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent
+
+# Set timezone
+timezone: Pacific/Auckland
+
+# Final message
+final_message: |
+  Cloud-init completed for ${hostname}
+  System boot finished at $TIMESTAMP
+  Uptime: $UPTIME seconds
