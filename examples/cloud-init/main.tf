@@ -45,6 +45,7 @@ data "nutanix_subnet" "vm_subnet" {
 }
 
 data "nutanix_image" "ubuntu" {
+  count      = var.image_name != "" ? 1 : 0
   image_name = var.image_name
 }
 
@@ -67,10 +68,10 @@ resource "nutanix_virtual_machine" "vm" {
   disk_list {
     disk_size_mib = var.disk_gb * 1024
 
-    data_source_reference = {
+    data_source_reference = var.image_name != "" ? {
       kind = "image"
-      uuid = data.nutanix_image.ubuntu.id
-    }
+      uuid = data.nutanix_image.ubuntu[0].id
+    } : null
   }
 
   # Cloud-init user data

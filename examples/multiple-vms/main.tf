@@ -72,11 +72,9 @@ resource "nutanix_virtual_machine" "vms" {
     } : null
   }
 
-  # Apply common categories plus index-specific ones
+  # Apply common categories (if any exist in Prism Central)
   dynamic "categories" {
-    for_each = merge(var.categories, {
-      "Index" = tostring(count.index + 1)
-    })
+    for_each = var.categories
     content {
       name  = categories.key
       value = categories.value
